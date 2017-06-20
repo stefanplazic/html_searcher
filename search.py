@@ -24,14 +24,42 @@ def get_all_Files( dir_Path='python-2.7.7-docs-html'):
 def create_dictionary(html_files = []):
 	
 	#dic to holed data for all pages
-	my_pages = {}
+	my_pages = create_page_dir(html_files)
+	
 	
 	#create parser
 	parser = Parser()
 
 	for file in html_files:
 		[links, words] = parser.parse(file)
-		my_pages[file] = words_frequency(words)
+		my_pages[file]['words'] = words_frequency(words)
+		
+		for link in links:
+			file_end = link.split('/')[-1]
+			print file_end
+
+	return my_pages
+
+
+'''
+for given link  it replaces ../ -> with full path
+returns the full path to file
+'''
+def link_converter(link, file_name):
+	parent_dir = file_name.split('/')[:-1]
+	link_sub_dirs = link.split('../')[:-1]
+	
+	for links in link_sub_dirs:
+		#evry time for ../ -> remove one level of dir 
+		parent_dir.pop()
+
+	full_link = '/'.join( parent_dir) + "/" + link.split('../')[-1]
+	print full_link
+
+def create_page_dir(html_files):
+	my_pages = {}
+	for file in html_files:
+		my_pages[file] = {'words':[], 'links':[]}
 
 	return my_pages
 
@@ -57,10 +85,11 @@ if __name__=='__main__':
 	#get file path from command line
 	file_path = sys.argv[1]
 
-	html_files = get_all_Files(file_path)
+	#html_files = get_all_Files(file_path)
 
-	my_pages = create_dictionary(html_files)
-	print my_pages
+	#my_pages = create_dictionary(html_files)
+	#link_converter('selena.html','me/you/nesto.html')
+	
 	
 	
 	
