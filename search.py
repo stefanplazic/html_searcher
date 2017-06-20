@@ -35,8 +35,11 @@ def create_dictionary(html_files = []):
 		my_pages[file]['words'] = words_frequency(words)
 		
 		for link in links:
-			file_end = link.split('/')[-1]
-			print file_end
+			
+			if link in my_pages:
+				# save to file where link points
+				my_pages[link]['links'].append(file)
+			
 
 	return my_pages
 
@@ -85,10 +88,23 @@ if __name__=='__main__':
 	#get file path from command line
 	file_path = sys.argv[1]
 
-	#html_files = get_all_Files(file_path)
+	html_files = get_all_Files(file_path)
 
-	#my_pages = create_dictionary(html_files)
-	#link_converter('selena.html','me/you/nesto.html')
+	my_pages = create_dictionary(html_files)
+	
+	option = 'n'
+	while option != 'y':
+	
+		#take user input 
+		user_input = raw_input('Enter the words   ')
+		user_input = user_input.strip()
+		user_input = user_input.split(' ')
+
+		#search this document
+
+		option = raw_input("Do you want to exit? (y|n):  ")
+	
+
 	
 	
 	
