@@ -1,6 +1,7 @@
 from parser import Parser
 import sys
 import os
+import operator
 
 '''
 returns all html files in given directory
@@ -83,6 +84,28 @@ def words_frequency(list_of_words):
 	return bags_of_words
 	
 
+def search(my_pages, list_of_words):
+	
+	search_result = {}
+	
+	for page in my_pages:
+		
+		score = 0
+		#check if page contatins that word at all
+		for word in list_of_words:
+			if word in my_pages[page]['words']:
+				score += my_pages[page]['words'][word] 
+
+			#add result only if score is different from zero
+			if score !=0:
+				search_result[page] = score
+
+	
+	#return sorted(search_result.values(),reverse=True)
+	return sorted(search_result.items(), key=operator.itemgetter(1),reverse=True)
+
+	
+
 if __name__=='__main__':
 	
 	#get file path from command line
@@ -91,7 +114,7 @@ if __name__=='__main__':
 	html_files = get_all_Files(file_path)
 
 	my_pages = create_dictionary(html_files)
-	
+	#print my_pages
 	option = 'n'
 	while option != 'y':
 	
@@ -100,7 +123,9 @@ if __name__=='__main__':
 		user_input = user_input.strip()
 		user_input = user_input.split(' ')
 
-		#search this document
+		search_result = search(my_pages, user_input)
+		print 'Your results: '
+		print search_result
 
 		option = raw_input("Do you want to exit? (y|n):  ")
 	
