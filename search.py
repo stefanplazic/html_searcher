@@ -45,21 +45,6 @@ def create_dictionary(html_files = []):
 	return my_pages
 
 
-'''
-for given link  it replaces ../ -> with full path
-returns the full path to file
-'''
-def link_converter(link, file_name):
-	parent_dir = file_name.split('/')[:-1]
-	link_sub_dirs = link.split('../')[:-1]
-	
-	for links in link_sub_dirs:
-		#evry time for ../ -> remove one level of dir 
-		parent_dir.pop()
-
-	full_link = '/'.join( parent_dir) + "/" + link.split('../')[-1]
-	print full_link
-
 def create_page_dir(html_files):
 	my_pages = {}
 	for file in html_files:
