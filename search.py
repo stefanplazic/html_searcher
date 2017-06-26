@@ -77,21 +77,16 @@ def words_frequency(list_of_words):
 def search(my_pages, list_of_words):
 	
 	search_result = {}
-	#the length of document
-	num_of_doc = len(my_pages)
+
 	
 	for page in my_pages:
 		
 		score = 0
 		#check if page contatins that word at all
 		for word in list_of_words:
-			word_score = 0 #temp score to store value for given word
-
 			if word in my_pages[page]['words']:
 				score += my_pages[page]['words'][word]
 				
-				#add  the number of links which points to this document
-				score += link_coef *  len(my_pages[page]['links']) 
 
 			else:
 				score = 0
@@ -101,12 +96,15 @@ def search(my_pages, list_of_words):
 		if score > 0:
 			search_result[page] = score
 
-	
-	#do the links
-	for page in my_pages:
+	for page in search_result:
+		
+		#add  the number of links which points to this document
+		search_result[page] += link_coef *  len(my_pages[page]['links']) 
+		#cycle through links
 		for link in my_pages[page]['links']:
 			if link in search_result:
 				search_result[page] += search_coef *  search_result[link]
+
 
 	return sorted(search_result.items(), key=operator.itemgetter(1),reverse=True)
 
