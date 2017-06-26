@@ -1,7 +1,11 @@
 from parser import Parser
+from query import Query
 import sys
 import os
 import operator
+
+link_coef= 0.2
+search_coef = 0.7
 
 '''
 returns all html files in given directory
@@ -59,6 +63,7 @@ def words_frequency(list_of_words):
 
 	for word in list_of_words:
 		
+		word = word.lower()
 		if word in bags_of_words:
 			#if word is already in the list - increment
 			bags_of_words[word] += 1
@@ -72,21 +77,37 @@ def words_frequency(list_of_words):
 def search(my_pages, list_of_words):
 	
 	search_result = {}
+	#the length of document
+	num_of_doc = len(my_pages)
 	
 	for page in my_pages:
 		
 		score = 0
 		#check if page contatins that word at all
 		for word in list_of_words:
-			if word in my_pages[page]['words']:
-				score += my_pages[page]['words'][word] 
+			word_score = 0 #temp score to store value for given word
 
-			#add result only if score is different from zero
-			if score !=0:
-				search_result[page] = score
+			if word in my_pages[page]['words']:
+				score += my_pages[page]['words'][word]
+				
+				#add  the number of links which points to this document
+				score += link_coef *  len(my_pages[page]['links']) 
+
+			else:
+				score = 0
+				break
+
+		#add result only if score is different from zero
+		if score > 0:
+			search_result[page] = score
 
 	
-	#return sorted(search_result.values(),reverse=True)
+	#do the links
+	for page in my_pages:
+		for link in my_pages[page]['links']:
+			if link in search_result:
+				search_result[page] += search_coef *  search_result[link]
+
 	return sorted(search_result.items(), key=operator.itemgetter(1),reverse=True)
 
 	
@@ -99,14 +120,20 @@ if __name__=='__main__':
 	html_files = get_all_Files(file_path)
 
 	my_pages = create_dictionary(html_files)
-	#print my_pages
+	
+	#init query parser
+	query = Query()
+
 	option = 'n'
 	while option != 'y':
 	
 		#take user input 
 		user_input = raw_input('Enter the words   ')
 		user_input = user_input.strip()
+		user_input = user_input.lower()
 		user_input = user_input.split(' ')
+
+		query.parse_query(user_input)
 
 		search_result = search(my_pages, user_input)
 		print 'Your results: '
