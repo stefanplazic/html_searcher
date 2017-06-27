@@ -131,7 +131,7 @@ if __name__=='__main__':
 		user_input = user_input.lower()
 		user_input = user_input.split(' ')
 
-		query.parse_query(user_input)
+		#query.parse_query(user_input)
 
 		search_result = search(my_pages, user_input)
 		print 'Your results: '
