@@ -3,6 +3,7 @@ from query import Query
 import sys
 import os
 import operator
+from graph import Graph
 
 link_coef= 0.2
 search_coef = 0.7
@@ -132,6 +133,7 @@ if __name__=='__main__':
 		user_input = user_input.split(' ')
 
 		#query.parse_query(user_input)
+		graph = Graph()
 
 		search_result = search(my_pages, user_input)
 		print 'Your results: '
